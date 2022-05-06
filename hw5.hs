@@ -117,25 +117,25 @@ chunkby :: Int -> [a] -> [[a]]
 chunkby n [] = []
 chunkby n l = ((take n l) : chunkby n (drop n l))
 
--- -- Question 2b
--- chunkByDays :: IO [[Observation]]
--- chunkByDays = do
---   obsData <- readData "2069-2021.csv"
---   let result = (chunkby 24 obsData)
---   return result
-
--- obsData <- readData "2069-2021.csv"
+-- Question 2b
 chunkByDays :: IO [[Observation]]
-chunkByDays = (chunkby 24 obsData)
+chunkByDays = do
+  obsData <- readData "2069-2021.csv"
+  let result = (chunkby 24 obsData)
+  return result
+
+-- -- obsData <- readData "2069-2021.csv"
+-- chunkByDays :: IO [[Observation]]
+-- chunkByDays = (chunkby 24 obsData)
 
 
--- -- 3a: add type declaration here 
--- -- 3a: add an explanation
--- dailyTemperatureStat :: ...
--- dailyTemperatureStat f day obsData = f (map temp dayList)  
---   where 
---     h = 24*(day-1)
---     dayList = (take 24 (drop h obsData))
+-- 3a: add type declaration here 
+-- 3a: add an explanation
+-- dailyTemperatureStat :: IO[[Observation]]
+dailyTemperatureStat f day obsData = f (map temp dayList)  
+  where 
+    h = 24*(day-1)
+    dayList = (take 24 (drop h obsData))
 
 
 
