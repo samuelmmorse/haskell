@@ -95,6 +95,7 @@ daySummary day = do
   let maxwindspeeddiff = maxDiff (map wind (take 24 (drop (day*24 - 24) obsData)))
   let result = (day, averagetemp, maxtempdiff, averagewind, maxwindspeeddiff)
   print result
+
 --- any other functions you need for 1a-1c go here
 
 wind(Observation _ _ _ _ w) = w
@@ -111,14 +112,16 @@ minval :: [Float] -> Float
 minval [] = 1/0
 minval a = min (head a) (minval(tail a))
   
-
 -- Question 2a
--- chunkby :: ...
--- chunkby ...
+chunkby :: Int -> [a] -> [[a]]
+chunkby n [] = []
+chunkby n l = ((take n l) : chunkby n (drop n l))
 
 -- -- Question 2b
--- chunkByDays :: ...
--- chunkByDays ...
+-- chunkByDays :: [a] -> [[a]]
+chunkByDays = do
+  obsData <- readData "2069-2021.csv"
+  print $ chunkby 24 obsData
 
 
 -- -- 3a: add type declaration here 
