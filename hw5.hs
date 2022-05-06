@@ -118,10 +118,15 @@ chunkby n [] = []
 chunkby n l = ((take n l) : chunkby n (drop n l))
 
 -- -- Question 2b
--- chunkByDays :: [a] -> [[a]]
-chunkByDays = do
-  obsData <- readData "2069-2021.csv"
-  print $ chunkby 24 obsData
+-- chunkByDays :: IO [[Observation]]
+-- chunkByDays = do
+--   obsData <- readData "2069-2021.csv"
+--   let result = (chunkby 24 obsData)
+--   return result
+
+-- obsData <- readData "2069-2021.csv"
+chunkByDays :: IO [[Observation]]
+chunkByDays = (chunkby 24 obsData)
 
 
 -- -- 3a: add type declaration here 
