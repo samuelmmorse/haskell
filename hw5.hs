@@ -118,41 +118,42 @@ chunkby n [] = []
 chunkby n l = ((take n l) : chunkby n (drop n l))
 
 -- Question 2b
-chunkByDays :: IO [[Observation]]
-chunkByDays = do
-  obsData <- readData "2069-2021.csv"
-  let result = (chunkby 24 obsData)
-  return result
-
--- -- obsData <- readData "2069-2021.csv"
--- chunkByDays :: IO [[Observation]]
--- chunkByDays = (chunkby 24 obsData)
-
+chunkByDays :: [a] -> [[a]]
+chunkByDays = chunkby 24
 
 -- 3a: add type declaration here 
--- 3a: add an explanation
--- dailyTemperatureStat :: IO[[Observation]]
+-- 3a: This function takes a function (something like maxval or minval), 
+--  which is a list of floats to a number. It also takes an Int (day) and a
+--  list of observations. The function produces a value for the stat (a)
+dailyTemperatureStat :: ([Float] -> a) -> Int -> [Observation] -> a
 dailyTemperatureStat f day obsData = f (map temp dayList)  
   where 
     h = 24*(day-1)
     dayList = (take 24 (drop h obsData))
 
 
+-- Question 3b
+allMinimumTemp filename = do 
+  obsData <- readData filename
+  let result = minTempList ((length obsData) `div` 24) obsData
+  putStr "Minimum temperature for each day of the year:"
+  print (result)
 
--- -- Example function for 3b: Computes the minimum temperature for Jan 3 based on the 24 hourly measurements
--- jan3Minimum filename = do 
---   obsData <- readData filename
---   let result = minimum (map temp (take 24 (drop 48 obsData)))
---   putStr "minimum temperature on January 3 = "
---   print (result)
+minTempList :: Int -> [Observation] -> [(Int, Float)]
+minTempList 1 obsData = [(1, dailyTemperatureStat minval 1 obsData)]
+minTempList n obsData = (n, dailyTemperatureStat minval n obsData) : (minTempList (n-1) obsData)
 
--- -- Question 3b
--- allMinimumTemp filename = do 
---   obsData <- readData filename
---   let result = ...
---   putStr "Minimum temperature for each day of the year:"
---   print (result)
+-- Question 3c
+-- bonus - I added a filter to throw out temperature differences of anything over a threshold
+highDifferentialDays filename = do
+  obsData <- readData filename
+  let result = highDiffList ((length obsData) `div` 24) obsData
+  -- using filter and lamda functions to get second element of 3 element tuple
+  let difflist = filter (\(_,a,_) -> a > 15) result
+  let cleaneddata = filter (\(_,a,_) -> a < 80) difflist
+  putStr "high differential days:"
+  return cleaneddata
 
--- -- Question 3c
--- highDifferentialDays filename = ...
-  
+highDiffList :: Int -> [Observation] -> [(Int, Float, Float)]
+highDiffList 1 obsData = [(1, (dailyTemperatureStat maxDiff 1 obsData), (dailyTemperatureStat myaverage 1 obsData))]
+highDiffList n obsData = (n, (dailyTemperatureStat maxDiff n obsData), (dailyTemperatureStat myaverage n obsData)) : (highDiffList (n-1) obsData)
